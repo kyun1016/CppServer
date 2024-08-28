@@ -3,45 +3,30 @@
 #include "CorePch.h"
 
 #include <thread>
+#include <atomic>
+#include <mutex>
+#include <Windows.h>
 
-void HellowThread()
-{
-    cout << "Hello Thread" << endl;
-}
-void HellowThread2(int32 num)
-{
-    cout << num << endl;
-}
+#include "ThreadManager.h"
 
-// t.get_id();                  // Thread ID
-// t.hardware_concurrency();    // CPU 코어 개수
-// t.detach();                  // Thread 객체에서 실제 쓰레드 분리
-// t.joinable())                
-// t.join();
+CoreGlobal Core;
+
+void ThreadMain()
+{
+    while (true)
+    {
+        cout << "Hello ! I am thread..." << LThreadId << endl;
+        this_thread::sleep_for(1s);
+    }
+}
 
 int main()
 {
-    std::unique_ptr<ServerCore::CorePch> server;
-    
-    server = std::make_unique< ServerCore::CorePch>();
-
-    
-
-    std::vector<std::thread> v;
-
-    for (int32 i = 0; i < 10; ++i)
+    for (int32 i = 0; i < 5; ++i)
     {
-        v.push_back(std::thread(HellowThread2, i));
+        GThreadManager->Launch(ThreadMain);
     }
 
-    server->HelloWorld();
-
-    for (int32 i = 0; i < 10; ++i)
-    {
-        if (v[i].joinable())
-            v[i].join();
-    }
-    
-
+    GThreadManager->Join();
     return 0;
 }
