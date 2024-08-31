@@ -9,66 +9,55 @@
 #include "ThreadManager.h"
 #include "RefCounting.h"
 
-class Wraight : public RefCountable
+using KnightRef = TSharedPtr<class Knight>;
+using InventoryRef = TSharedPtr<class Inventory>;
+
+class Knight : public RefCountable
 {
 public:
-    int _hp = 150;
-    int _posX = 0;
-    int _posY = 0;
-};
+    Knight()
+    {
+        cout << "Knight()" << endl;
+    }
 
-using WraightRef = TSharedPtr<Wraight>;
+    ~Knight()
+    {
+        cout << "~Knight()" << endl;
+    }
 
-class Missile : public RefCountable
-{
-public:
-    void SetTarget(WraightRef target)   // 하지만, 해당 방법은 복사하는데 비용이 들기 때문에, & ref 형태로 옮겨주는 방식도 하나의 방법이다.
+    void SetTarget(KnightRef target)
     {
         _target = target;
     }
 
-    bool Update()
-    {
-        if (_target == nullptr)
-            return false;
-
-        int posX = _target->_posX;
-        int posY = _target->_posY;
-
-        // TODO: 쫓아간다
-        if (_target->_hp == 0)
-        {
-            _target = nullptr;
-            return false;
-        }
-        return true;
-    }
-
-    WraightRef _target = nullptr;
+    KnightRef _target = nullptr;
+    InventoryRef _inventory = nullptr;
 };
-using MissileRef = TSharedPtr<Missile>;
+
+class Inventory : public RefCountable
+{
+public:
+    Inventory(KnightRef knight)
+        : _knight(**knight)
+    {
+
+    }
+    Knight& _knight;
+};
+
 
 int main()
 {
-    WraightRef wraight(new Wraight());
-    MissileRef missile(new Missile());
-    missile->SetTarget(wraight);
+    // 1) 이미 만들어진 클래스 대상으로 사용 불가
+    // 2) 순환 (Cycle) 문제
 
-    wraight->_hp = 0;
-    wraight = nullptr;
-
-    while (true)
-    {
-        if (missile == nullptr)
-            break;
-
-        if (!missile->Update())
-        {
-            // delete missile
-            missile = nullptr;
-        }
-    }
     
+    // RefCountBlock (useCount(shared), weakCount);
+    shared_ptr<Knight> spr = make_shared<Knight>();
+    weak_ptr<Knight> wpr = spr;
+
+    bool expire = wpr.expired();
+    shared_ptr<Knight> spr2 = wpr.lock();
     
     return 0;
 }
