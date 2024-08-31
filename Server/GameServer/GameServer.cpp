@@ -10,72 +10,80 @@
 #include "RefCounting.h"
 #include "Memory.h"
 
-class Knight{
+class Player
+{
 public:
-    Knight()
-    {
-        cout << "Knight()" << endl;
-    }
-
-    ~Knight()
-    {
-        cout << "~Knight()" << endl;
-    }
-
-    //static void* operator new(size_t size)
-    //{
-    //    cout << "Knight new! " << size << endl;
-    //    void* ptr = ::malloc(size);
-    //    return ptr;
-    //}
-
-    //static void operator delete(void* ptr)
-    //{
-    //    cout << "Knight delete!" << endl;
-    //    ::free(ptr);
-    //}
-
-    int64 _hp = 10;
-    int32 _damage = 100;
-    int32 _damage2 = 100;
-    int32 _damage3 = 100;
+    Player() {}
+    virtual ~Player() {}
 };
 
-// new operator overloding (Global)
-void* operator new(size_t size)
+class Knight : public Player
 {
-    cout << "new! " << size << endl;
-    void* ptr = ::malloc(size);
-    return ptr;
-}
+public:
+	Knight()
+	{
+		cout << "Knight()" << endl;
+	}
 
+	~Knight()
+	{
+		cout << "~Knight()" << endl;
+	}
 
-void operator delete(void* ptr)
-{
-    cout << "delete!" << endl;
-    ::free(ptr);
-}
+	//static void* operator new(size_t size)
+	//{
+	//    cout << "Knight new! " << size << endl;
+	//    void* ptr = ::malloc(size);
+	//    return ptr;
+	//}
 
-void operator delete[](void* ptr)
-{
-    cout << "delete[]!" << endl;
-    ::free(ptr);
-}
+	//static void operator delete(void* ptr)
+	//{
+	//    cout << "Knight delete!" << endl;
+	//    ::free(ptr);
+	//}
 
-void* operator new[](size_t size)
-{
-    cout << "new[]!" << size << endl;
-    void* ptr = ::malloc(size);
-    return ptr;
-}
+	int64 _hp = 10;
+	int32 _damage = 100;
+	int32 _damage2 = 100;
+	int32 _damage3 = 100;
+};
+
+//// new operator overloding (Global)
+//void* operator new(size_t size)
+//{
+//	cout << "new! " << size << endl;
+//	void* ptr = ::malloc(size);
+//	return ptr;
+//}
+//
+//
+//void operator delete(void* ptr)
+//{
+//	cout << "delete!" << endl;
+//	::free(ptr);
+//}
+//
+//void operator delete[](void* ptr)
+//{
+//	cout << "delete[]!" << endl;
+//	::free(ptr);
+//}
+//
+//void* operator new[](size_t size)
+//{
+//	cout << "new[]!" << size << endl;
+//	void* ptr = ::malloc(size);
+//	return ptr;
+//}
 
 
 
 int main()
 {
-    Knight* knight = xnew<Knight>();
-
-    xdelete(knight);
-
-    return 0;
+	Knight* knight = (Knight*) xnew<Player>();
+	knight->_hp = 100;
+	xdelete(knight);
+	knight->_hp = 100;
+	return 0;
 }
