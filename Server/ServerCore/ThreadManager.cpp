@@ -31,6 +31,8 @@ void ThreadManager::Launch(function<void(void)> callback)
 
 void ThreadManager::Join()
 {
+	LockGuard guard(_lock);
+
 	for (thread& t : _threads)
 	{
 		if (t.joinable())

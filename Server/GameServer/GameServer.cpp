@@ -38,15 +38,21 @@ public:
 
 int main()
 {
-	cout << "vector" << endl;
-	Vector<Knight> v(10);
-	cout << "list" << endl;
-	List<Knight> l(10);
+	for (int32 i = 0; i < 5; ++i)
+	{
+		GThreadManager->Launch([]()
+			{
+				while (true)
+				{
+					Vector<Knight> v(10);
+					Map<int32, Knight> m;
+					m[100] = Knight();
 
-	cout << "map" << endl;
-	Map<int32, Knight> m;
-	m.insert(std::make_pair<int32, Knight>(0, Knight()));
-	cout << m[0]._hp << endl;
+					this_thread::sleep_for(10ms);
+				}
+			});
+	}
 
+	GThreadManager->Join();
 	return 0;
 }
