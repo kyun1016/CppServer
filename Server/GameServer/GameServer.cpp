@@ -7,65 +7,68 @@
 #include <mutex>
 #include <Windows.h>
 #include "ThreadManager.h"
+#include "RefCounting.h"
 
-bool IsPrime(int number)
+class Wraight : public RefCountable
 {
-    if (number <= 1)
-        return false;
-    if (number == 2 || number == 3)
-        return true;
+public:
+    int _hp = 150;
+    int _posX = 0;
+    int _posY = 0;
+};
 
-    for (int i = 2; i < number; ++i)
+using WraightRef = TSharedPtr<Wraight>;
+
+class Missile : public RefCountable
+{
+public:
+    void SetTarget(WraightRef target)   // 하지만, 해당 방법은 복사하는데 비용이 들기 때문에, & ref 형태로 옮겨주는 방식도 하나의 방법이다.
     {
-        if (number % i == 0)
+        _target = target;
+    }
+
+    bool Update()
+    {
+        if (_target == nullptr)
             return false;
-    }
-    return true;
-}
 
-// [start, end]
-int CountPrime(int start, int end)
-{
-    int count = 0;
-    for (int number = start; number <= end; ++number)
-    {
-        if (IsPrime(number))
-            ++count;
+        int posX = _target->_posX;
+        int posY = _target->_posY;
+
+        // TODO: 쫓아간다
+        if (_target->_hp == 0)
+        {
+            _target = nullptr;
+            return false;
+        }
+        return true;
     }
 
-    return count;
-}
+    WraightRef _target = nullptr;
+};
+using MissileRef = TSharedPtr<Missile>;
 
 int main()
 {
-    // 1000 = 168
-    // 1'0000 = 1229
-    // 100'0000 = 78498
-    const int MAX_NUMBER = 100'0000;
-    int coreCount = thread::hardware_concurrency();
-    int jobCount = (MAX_NUMBER / coreCount) + 1;
+    WraightRef wraight(new Wraight());
+    MissileRef missile(new Missile());
+    missile->SetTarget(wraight);
 
-    vector<thread> threads;
-    threads.reserve(coreCount);
-    
-    atomic<int> primeCount = 0;
-    for (int i = 0; i < coreCount; ++i)
+    wraight->_hp = 0;
+    wraight = nullptr;
+
+    while (true)
     {
-        int start = (i * jobCount) + 1;
-        int end = min(((i + 1) * jobCount), MAX_NUMBER);
+        if (missile == nullptr)
+            break;
 
-        threads.push_back(thread([start, end, &primeCount]
-            {
-                primeCount += CountPrime(start, end);
-            }));
+        if (!missile->Update())
+        {
+            // delete missile
+            missile = nullptr;
+        }
     }
-
-    for (thread& t : threads)
-        t.join();
-
-    cout << primeCount << endl;
-
-
-    GThreadManager->Join();
+    
+    
     return 0;
 }
