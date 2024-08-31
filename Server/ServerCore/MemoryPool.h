@@ -1,11 +1,17 @@
 #pragma once
 
+enum
+{
+	SLIST_ALIGNMENT = 16
+};
+
 /*-------------------
 * MemoryHeader
 -------------------*/
 
 // 동일한 크기의 메모리를 관리하는 방법
-struct MemoryHeader
+DECLSPEC_ALIGN(SLIST_ALIGNMENT)
+struct MemoryHeader : public SLIST_ENTRY
 {
 	// [MemoryHeader][Data]
 	MemoryHeader(int32 size)
@@ -32,6 +38,7 @@ struct MemoryHeader
 /*-------------------
 * MemoryPool
 -------------------*/
+DECLSPEC_ALIGN(SLIST_ALIGNMENT)
 class MemoryPool
 {
 public:
@@ -42,10 +49,8 @@ public:
 	MemoryHeader* Pop();
 
 private:
+	SLIST_HEADER _header;
 	int32 _allocSize = 0;			// 담당하고 있는 메모리 사이즈
 	atomic<int32> _allocCount = 0;	// 갖고 있는 메모리 개수
-
-	USE_LOCK;
-	queue<MemoryHeader*> _queue;
 };
 
