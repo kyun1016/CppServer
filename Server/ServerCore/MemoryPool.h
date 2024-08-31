@@ -51,6 +51,7 @@ public:
 private:
 	SLIST_HEADER _header;
 	int32 _allocSize = 0;			// 담당하고 있는 메모리 사이즈
-	atomic<int32> _allocCount = 0;	// 갖고 있는 메모리 개수
+	atomic<int32> _useCount = 0;	// 갖고 있는 메모리 개수
+	atomic<int32> _reserveCount = 0;	// 갖고 있는 메모리 개수
 };
 
