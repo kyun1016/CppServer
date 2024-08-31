@@ -8,12 +8,9 @@
 #include <Windows.h>
 #include "ThreadManager.h"
 #include "RefCounting.h"
+#include "Memory.h"
 
-using KnightRef = TSharedPtr<class Knight>;
-using InventoryRef = TSharedPtr<class Inventory>;
-
-class Knight : public RefCountable
-{
+class Knight{
 public:
     Knight()
     {
@@ -25,39 +22,60 @@ public:
         cout << "~Knight()" << endl;
     }
 
-    void SetTarget(KnightRef target)
-    {
-        _target = target;
-    }
+    //static void* operator new(size_t size)
+    //{
+    //    cout << "Knight new! " << size << endl;
+    //    void* ptr = ::malloc(size);
+    //    return ptr;
+    //}
 
-    KnightRef _target = nullptr;
-    InventoryRef _inventory = nullptr;
+    //static void operator delete(void* ptr)
+    //{
+    //    cout << "Knight delete!" << endl;
+    //    ::free(ptr);
+    //}
+
+    int64 _hp = 10;
+    int32 _damage = 100;
+    int32 _damage2 = 100;
+    int32 _damage3 = 100;
 };
 
-class Inventory : public RefCountable
+// new operator overloding (Global)
+void* operator new(size_t size)
 {
-public:
-    Inventory(KnightRef knight)
-        : _knight(**knight)
-    {
+    cout << "new! " << size << endl;
+    void* ptr = ::malloc(size);
+    return ptr;
+}
 
-    }
-    Knight& _knight;
-};
+
+void operator delete(void* ptr)
+{
+    cout << "delete!" << endl;
+    ::free(ptr);
+}
+
+void operator delete[](void* ptr)
+{
+    cout << "delete[]!" << endl;
+    ::free(ptr);
+}
+
+void* operator new[](size_t size)
+{
+    cout << "new[]!" << size << endl;
+    void* ptr = ::malloc(size);
+    return ptr;
+}
+
 
 
 int main()
 {
-    // 1) 이미 만들어진 클래스 대상으로 사용 불가
-    // 2) 순환 (Cycle) 문제
+    Knight* knight = xnew<Knight>();
 
-    
-    // RefCountBlock (useCount(shared), weakCount);
-    shared_ptr<Knight> spr = make_shared<Knight>();
-    weak_ptr<Knight> wpr = spr;
+    xdelete(knight);
 
-    bool expire = wpr.expired();
-    shared_ptr<Knight> spr2 = wpr.lock();
-    
     return 0;
 }
