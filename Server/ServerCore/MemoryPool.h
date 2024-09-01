@@ -9,7 +9,7 @@ enum
 * MemoryHeader
 -------------------*/
 
-// µ¿ÀÏÇÑ Å©±âÀÇ ¸Ş¸ğ¸®¸¦ °ü¸®ÇÏ´Â ¹æ¹ı
+// ë™ì¼í•œ í¬ê¸°ì˜ ë©”ëª¨ë¦¬ë¥¼ ê´€ë¦¬í•˜ëŠ” ë°©ë²•
 DECLSPEC_ALIGN(SLIST_ALIGNMENT)
 struct MemoryHeader : public SLIST_ENTRY
 {
@@ -20,7 +20,7 @@ struct MemoryHeader : public SLIST_ENTRY
 	static void* AttachHeader(MemoryHeader* header, int32 size)
 	{
 		new(header)MemoryHeader(size);	// placement new
-		return reinterpret_cast<void*>(++header);	// MemoryHeader ¸¸Å­ Å©±â¸¦ °Ç³Ê¶Ù°í Æ÷ÀÎÅÍ ¹İÈ¯
+		return reinterpret_cast<void*>(++header);	// MemoryHeader ë§Œí¼ í¬ê¸°ë¥¼ ê±´ë„ˆë›°ê³  í¬ì¸í„° ë°˜í™˜
 	}
 
 	static MemoryHeader* DetachHeader(void* ptr)
@@ -32,7 +32,7 @@ struct MemoryHeader : public SLIST_ENTRY
 
 	int32 allocSize;
 
-	// TODO: ÇÊ¿äÇÑ Ãß°¡ Á¤º¸
+	// TODO: í•„ìš”í•œ ì¶”ê°€ ì •ë³´
 };
 
 /*-------------------
@@ -50,8 +50,8 @@ public:
 
 private:
 	SLIST_HEADER _header;
-	int32 _allocSize = 0;			// ´ã´çÇÏ°í ÀÖ´Â ¸Ş¸ğ¸® »çÀÌÁî
-	atomic<int32> _useCount = 0;	// °®°í ÀÖ´Â ¸Ş¸ğ¸® °³¼ö
-	atomic<int32> _reserveCount = 0;	// °®°í ÀÖ´Â ¸Ş¸ğ¸® °³¼ö
+	int32 _allocSize = 0;			// ë‹´ë‹¹í•˜ê³  ìˆëŠ” ë©”ëª¨ë¦¬ ì‚¬ì´ì¦ˆ
+	atomic<int32> _useCount = 0;	// ê°–ê³  ìˆëŠ” ë©”ëª¨ë¦¬ ê°œìˆ˜
+	atomic<int32> _reserveCount = 0;	// ê°–ê³  ìˆëŠ” ë©”ëª¨ë¦¬ ê°œìˆ˜
 };
 

@@ -20,7 +20,7 @@ MemoryPool::~MemoryPool()
 void MemoryPool::Push(MemoryHeader* ptr)
 {
 	ptr->allocSize = 0;
-	// Pool¿¡ ¸Ş¸ğ¸® ¹İ³³
+	// Poolì— ë©”ëª¨ë¦¬ ë°˜ë‚©
 	::InterlockedPushEntrySList(&_header, static_cast<PSLIST_ENTRY>(ptr));
 	_useCount.fetch_sub(1);
 	_reserveCount.fetch_add(1);
@@ -30,7 +30,7 @@ MemoryHeader* MemoryPool::Pop()
 {
 	MemoryHeader* memory = static_cast<MemoryHeader*>(::InterlockedPopEntrySList(&_header));
 
-	// ¾øÀ¸¸é »õ·Î ¸¸µç´Ù.
+	// ì—†ìœ¼ë©´ ìƒˆë¡œ ë§Œë“ ë‹¤.
 	if (memory == nullptr)
 	{
 		memory = reinterpret_cast<MemoryHeader*>(::_aligned_malloc(_allocSize, SLIST_ALIGNMENT));

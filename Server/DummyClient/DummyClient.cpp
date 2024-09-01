@@ -9,13 +9,13 @@
 int main()
 {
     // ---------------------------
-    // ¼ÒÄÏ »ı¼º
+    // ì†Œì¼“ ìƒì„±
   
-    // À©¼Ó ÃÊ±âÈ­ (ws2_32 ¶óÀÌºê·¯¸® ÃÊ±âÈ­)
-    // °ü·Ã Á¤º¸°¡ wsaData¿¡ Ã¤¿öÁü
+    // ìœˆì† ì´ˆê¸°í™” (ws2_32 ë¼ì´ë¸ŒëŸ¬ë¦¬ ì´ˆê¸°í™”)
+    // ê´€ë ¨ ì •ë³´ê°€ wsaDataì— ì±„ì›Œì§
     WSADATA wsaData;
     if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-        return -1;   // ½ÃÀÛÀÌ ¾ÈµÇ´Â °æ¿ì ¿À·ù·Î 
+        return -1;   // ì‹œì‘ì´ ì•ˆë˜ëŠ” ê²½ìš° ì˜¤ë¥˜ë¡œ 
 
     // ad : Address Family (AF_INET = IPv4, AF_INET6 = IPv6)
     // type : TCP(SOCK_STREAM) vs UDP(SOCK_DGRAM)
@@ -30,8 +30,8 @@ int main()
     }
 
     // ---------------------------
-    // µ¥ÀÌÅÍ ¿¬°á
-    // ¿¬°áÇÒ ¸ñÀûÁö´Â? (IPÁÖ¼Ò + Port) -> XX ¾ÆÆÄÆ® YY È£
+    // ë°ì´í„° ì—°ê²°
+    // ì—°ê²°í•  ëª©ì ì§€ëŠ”? (IPì£¼ì†Œ + Port) -> XX ì•„íŒŒíŠ¸ YY í˜¸
     SOCKADDR_IN serverAddr;
     ::memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
@@ -39,7 +39,7 @@ int main()
     ::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
     serverAddr.sin_port = ::htons(7777); // 80 : HTTP
     // host to network short
-    // Little-Endian vs Big-Endian (ÀÌ Ã³¸®¸¦ À§ÇØ ÇÑ¹ø ÇÔ¼ö¸¦ °ÅÃÄÁØ´Ù.)
+    // Little-Endian vs Big-Endian (ì´ ì²˜ë¦¬ë¥¼ ìœ„í•´ í•œë²ˆ í•¨ìˆ˜ë¥¼ ê±°ì³ì¤€ë‹¤.)
     
     if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
     {
@@ -49,22 +49,55 @@ int main()
     }
 
     // ---------------------------
-    // ¿¬°á ¼º°ø! ÀÌÁ¦ºÎÅÍ µ¥ÀÌÅÍ ¼Û¼ö½Å °¡´É!
+    // ì—°ê²° ì„±ê³µ! ì´ì œë¶€í„° ë°ì´í„° ì†¡ìˆ˜ì‹  ê°€ëŠ¥!
     cout << "Connected To Server!" << endl;
 
     while (true)
     {
-        // TODO
+        // ---------------------------
+        // ì†¡ì‹ 
+        char sendBuffer[100] = "Hello World!";
+
+        for (int32 i = 0; i < 11; i++)
+        {
+            int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
+            if (resultCode == SOCKET_ERROR)
+            {
+                int32 errCode = ::WSAGetLastError();
+                cout << "Send ErrorCode : " << errCode << endl;
+                return 0;
+            }
+        }
+
+        cout << "Send Data! Len = " << sizeof(sendBuffer) << endl;
+
+        //// ---------------------------
+        //// ìˆ˜ì‹ 
+        //char recvBuffer[1000];
+
+        //this_thread::sleep_for(1s);
+
+        //int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+        //if (recvLen <= 0)
+        //{
+        //    int32 errCode = ::WSAGetLastError();
+        //    cout << "Recv ErrorCode : " << errCode << endl;
+        //    return 0;
+        //}
+
+        //cout << "Recv Data! Data = " << recvBuffer << endl;
+        //cout << "Recv Data! Len = " << recvLen << endl;
+
 
         this_thread::sleep_for(1s);
     }
 
     // ---------------------------
-    // µ¿ÀÛ Á¾·á ÈÄ µ¥ÀÌÅÍ cleaning
-    // ¼ÒÄÏ ¸®¼Ò½º ¹İÈ¯
+    // ë™ì‘ ì¢…ë£Œ í›„ ë°ì´í„° cleaning
+    // ì†Œì¼“ ë¦¬ì†ŒìŠ¤ ë°˜í™˜
     ::closesocket(clientSocket);
 
-    // À©¼Ó Á¾·á
+    // ìœˆì† ì¢…ë£Œ
     ::WSACleanup();
 
     return 0;
