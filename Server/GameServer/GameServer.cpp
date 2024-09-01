@@ -15,119 +15,84 @@
 #include <ws2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
 
-
+void HandleError(const char* cause)
+{
+	int32 errCode = ::WSAGetLastError();
+	cout << cause << " ErrorCode : " << errCode << endl;
+}
 int main()
 {
-    // ---------------------------
-    // 소켓 생성
+	// ---------------------------
+	// 소켓 생성
 
-    // 윈속 초기화 (ws2_32 라이브러리 초기화)
-    // 관련 정보가 wsaData에 채워짐
-    WSADATA wsaData;
-    if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-        return -1;   // 시작이 안되는 경우 오류로 
+	// 윈속 초기화 (ws2_32 라이브러리 초기화)
+	// 관련 정보가 wsaData에 채워짐
+	WSADATA wsaData;
+	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+		return -1;   // 시작이 안되는 경우 오류로 
 
-    // ad : Address Family (AF_INET = IPv4, AF_INET6 = IPv6)
-    // type : TCP(SOCK_STREAM) vs UDP(SOCK_DGRAM)
-    // protocol : 0
-    // return : descriptor
-    SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
-    if (listenSocket == INVALID_SOCKET)
-    {
-        int32 errCode = ::WSAGetLastError();
-        cout << "Socket ErrorCode : " << errCode << endl;
-        return -1;
-    }
+	SOCKET serverSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
+	if (serverSocket == INVALID_SOCKET)
+	{
+		HandleError("Socket");
+		return -1;
+	}
 
-    // ---------------------------
-    // 데이터 연결
-    // 나의 주소는? (IP주소 + Port)->XX 아파트 YY 호
-    SOCKADDR_IN serverAddr;
-    ::memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // 알아서 IP 맞춰줘
-    serverAddr.sin_port = ::htons(7777); // 80 : HTTP
-
-    // bind
-    if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
-    {
-        int32 errCode = ::WSAGetLastError();
-        cout << "Bind ErrorCode : " << errCode << endl;
-        return 0;
-    }
-
-    // listen 시작
-    if (::listen(listenSocket, 10) == SOCKET_ERROR)     // backlog (대기 queue)
-    {
-        int32 errCode = ::WSAGetLastError();
-        cout << "Listen ErrorCode : " << errCode << endl;
-        return 0;
-    }
-
-    // ---------------------------
-    // 연결 완료! 이제부터 데이터 송수신 가능!
-
-    while (true)
-    {
-        SOCKADDR_IN clientAddr; // IPv4
-        ::memset(&clientAddr, 0, sizeof(clientAddr));
-        int32 addrLen = sizeof(clientAddr);
-
-        // 단말기 (통신 시 활용)
-        SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-        if (clientSocket == INVALID_SOCKET)
-        {
-            int32 errCode = ::WSAGetLastError();
-            cout << "Accept ErrorCode : " << errCode << endl;
-            return 0;
-        }
-
-        // 손님 입장!
-        char ipAddress[16];
-        ::inet_ntop(AF_INET, &clientAddr.sin_addr, ipAddress, sizeof(ipAddress));
-        cout << "Client Connected! IP = " << ipAddress << endl;
-
-        // TODO
-        while (true)
-        {
-            // ---------------------------
-            // 수신
-            char recvBuffer[1050];
-
-            this_thread::sleep_for(1s);
-
-            int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-            if (recvLen <= 0)
-            {
-                int32 errCode = ::WSAGetLastError();
-                cout << "Recv ErrorCode : " << errCode << endl;
-                return 0;
-            }
-
-            cout << "Recv Data! Data = " << recvBuffer << endl;
-            cout << "Recv Data! Len = " << recvLen << endl;
-
-            //// ---------------------------
-            //// 송신
-            //int32 resultCode = ::send(clientSocket, recvBuffer, recvLen, 0);
-            //if (resultCode == SOCKET_ERROR)
-            //{
-            //    int32 errCode = ::WSAGetLastError();
-            //    cout << "Send ErrorCode : " << errCode << endl;
-            //    return 0;
-            //}
-            // cout << "Send Data! Len = " << recvLen << endl;
-        }
-        ::closesocket(clientSocket);
-    }
+	// ---------------------------
+	// bind
+	SOCKADDR_IN serverAddr;
+	::memset(&serverAddr, 0, sizeof(serverAddr));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // 알아서 IP 맞춰줘
+	serverAddr.sin_port = ::htons(7777); // 80 : HTTP
 
 
-    // ---------------------------
-    // 동작 종료 후 데이터 cleaning
-    // 소켓 리소스 반환
-    ::closesocket(listenSocket);
+	if (::bind(serverSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
+	{
+		HandleError("Bind");
+		return -1;
+	}
 
-    // 윈속 종료
-    ::WSACleanup();
+	// ---------------------------
+	// 연결 완료! 이제부터 데이터 송수신 가능!
+
+	while (true)
+	{
+		SOCKADDR_IN clientAddr; // IPv4
+		::memset(&clientAddr, 0, sizeof(clientAddr));
+		int32 addrLen = sizeof(clientAddr);
+
+		// this_thread::sleep_for(1s);
+
+		char recvBuffer[1000];
+
+		int32 recvLen = ::recvfrom(serverSocket, recvBuffer, sizeof(recvBuffer), 0, (SOCKADDR*)&clientAddr, &addrLen);
+		if (recvLen <= 0)
+		{
+			HandleError("RecvFrom");		// TODO: 추후 멀티쓰레드에서는 오류가 발생한 통신만 끊어주는 방식으로 변경 필요
+			return -1;
+		}
+
+		cout << "Recv Data! Data = " << recvBuffer << endl;
+		cout << "Recv Data! Len = " << recvLen << endl;
+
+		int32 errorCode = ::sendto(serverSocket, recvBuffer, recvLen, 0, (SOCKADDR*)&clientAddr, sizeof(clientAddr));
+
+		if (errorCode == SOCKET_ERROR)
+		{
+			HandleError("Send To");
+			return -1;
+		}
+		cout << "Send Data! Len = " << recvLen << endl;
+	}
+
+
+	// ---------------------------
+	// 동작 종료
+	// 소켓 리소스 반환
+	::closesocket(serverSocket);
+
+	// 윈속 종료
+	::WSACleanup();
 	return 0;
 }
