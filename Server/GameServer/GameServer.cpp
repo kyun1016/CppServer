@@ -45,8 +45,9 @@ int main()
 	}
 
 	// https://learn.microsoft.com/ko-kr/windows/win32/api/winsock/nf-winsock-ioctlsocket
-	// If on = 0, blocking is enabled; 
-z	u_long on = 1;
+	// If on = 0, blocking is enabled;
+	// If on != 0, non-blocking mode is enabled.
+	u_long on = 1;
 	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
 	{
 		HandleError("Setting Non-Blocking Socket");
