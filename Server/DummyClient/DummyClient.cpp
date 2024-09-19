@@ -14,6 +14,8 @@ void HandleError(const char* cause)
 
 int main()
 {
+	SetConsoleOutputCP(CP_UTF8);
+
 	// ---------------------------
 	// 소켓 생성
 

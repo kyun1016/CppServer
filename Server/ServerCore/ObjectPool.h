@@ -45,3 +45,4 @@ int32 ObjectPool<Type>::s_allocSize = sizeof(Type) + sizeof(MemoryHeader);
 
 template<typename Type>
 MemoryPool ObjectPool<Type>::s_pool{ s_allocSize };
+
