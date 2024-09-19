@@ -16,22 +16,25 @@ int main()
 {
 	SetConsoleOutputCP(CP_UTF8);
 
-	// ---------------------------
-	// 소켓 생성
-
-	// 윈속 초기화 (ws2_32 라이브러리 초기화)
 	WSADATA wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return -1;   // 시작이 안되는 경우 오류로 
 
-	// type : TCP(SOCK_STREAM) vs UDP(SOCK_DGRAM)
-	SOCKET clientSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
+	SOCKET clientSocket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (clientSocket == INVALID_SOCKET)
 	{
 		HandleError("Socket");
 		return -1;
 	}
 
+	// If on = 0, blocking is enabled; 
+	// If on != 0, non-blocking mode is enabled.
+	u_long on = 1;
+	if (::ioctlsocket(clientSocket, FIONBIO, &on) == INVALID_SOCKET)
+	{
+		HandleError("Setting Non-Blocking Socket");
+		return -1;
+	}
 
 	SOCKADDR_IN serverAddr;
 	::memset(&serverAddr, 0, sizeof(serverAddr));
@@ -39,49 +42,64 @@ int main()
 	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
 	serverAddr.sin_port = ::htons(7777); // 80 : HTTP
 
-	// Connected UDP
-	::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
-
+	// Connected
 	while (true)
 	{
-		char sendBuffer[100] = "Hello World";
-
-		// 자동으로 나의 IP 주소 + 포트 번호 설정
-		//// Unconnected UDP
-		//int32 resultCode = ::sendto(clientSocket, sendBuffer, sizeof(sendBuffer), 0, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
-
-		// Connected UDP
-		int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
-		if (resultCode == SOCKET_ERROR)
+		if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		{
-			HandleError("Send To");
-			return 0;
+			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
+			// 이미 연결된 상태라면 break
+			if (::WSAGetLastError() == WSAEISCONN)
+				break;
+			// Error
+			break;
+		}
+	}
+
+	cout << "Connected to Server!" << endl;
+
+	char sendBuffer[100] = "Hello Non-Blocking Server!";
+
+	this_thread::sleep_for(1s);
+	// Send
+	while (true)
+	{
+		if (::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0) == SOCKET_ERROR)
+		{
+			// 블록했어야 하지만, Non-Blocking 이여서 pass
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
+
+			// Error
+			break;
 		}
 
-		cout << "Send Data! Len = " << sizeof(sendBuffer) << endl;
+		cout << "Send Data ! Len = " << sizeof(sendBuffer) << endl;
 
+		// Recv
+		while (true) {
+			char recvBuffer[1000];
+			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+			if (recvLen == SOCKET_ERROR)
+			{
+				// 블록했어야 하지만, Non-Blocking 이여서 pass
+				if (::WSAGetLastError() == WSAEWOULDBLOCK)
+					continue;
 
-		// ---------------------------
-		// 수신
-		SOCKADDR_IN recvAddr; // IPv4
-		::memset(&recvAddr, 0, sizeof(recvAddr));
-		int32 addrLen = sizeof(recvAddr);
+				// Error
+				break;
+			}
+			else if (recvLen == 0)
+			{
+				// 연결 끊김
+				break;
+			}
 
-		char recvBuffer[1000];
-
-		// // Unconnected UDP
-		// int32 recvLen = ::recvfrom(clientSocket, recvBuffer, sizeof(recvBuffer), 0, (SOCKADDR*)&recvAddr, &addrLen);
-		// Connected UDP
-		int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-		if (recvLen <= 0)
-		{
-			HandleError("RecvFrom");		// TODO: 추후 멀티쓰레드에서는 오류가 발생한 통신만 끊어주는 방식으로 변경 필요
-			// return -1;
+			cout << "Recv Data Len = " << recvLen << endl;
+			break;
 		}
-
-
-		cout << "Recv Data! Data = " << recvBuffer << endl;
-		cout << "Recv Data! Len = " << recvLen << endl;
 
 		this_thread::sleep_for(1s);
 	}

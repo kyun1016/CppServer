@@ -1,7 +1,6 @@
 #include "pch.h"
 #include <iostream>
 #include "CorePch.h"
-
 #include <thread>
 #include <atomic>
 #include <mutex>
@@ -31,74 +30,116 @@ int main()
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return -1;   // 시작이 안되는 경우 오류로 
 
-	SOCKET serverSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
-	if (serverSocket == INVALID_SOCKET)
+	// 지금까지 방식은 블로킹(Blocking) 소켓
+	// accept -> 접속한 클라가 있을 때
+	// connect -> 서버 접속 성공했을 때
+	// send, sendto -> 요청한 데이터를 송신 버퍼에 복사했을 때
+	// recv, recvfrom -> 수신 버퍼에 도착한 데이터가 있고, 이를 유저레벨 버퍼에 복사했을 때
+
+	// Non-Blocking
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+	if (listenSocket == INVALID_SOCKET)
 	{
-		HandleError("Socket");
+		HandleError("Create Socket");
 		return -1;
 	}
 
-	// 옵션을 해석하고 처리할 주체?
-	// 소켓 코드 -> SOL_SOCKET
-	// IPv4 -> IPPROTO_IP
-	// TCP 프로토콜 -> IPPROTO_TCP
-	// SO_KEEPALIVE = 주기적으로 연결 상태 확인 여부 (TCP Only)
-	// 상대방이 소리소문 없이 연결을 끊는다면?
-	// 주기적으로 연결을 확인하는 방법이다.
+	// https://learn.microsoft.com/ko-kr/windows/win32/api/winsock/nf-winsock-ioctlsocket
+	// If on = 0, blocking is enabled; 
+z	u_long on = 1;
+	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
+	{
+		HandleError("Setting Non-Blocking Socket");
+		return -1;
+	}
+
 	bool enable = true;
-	::setsockopt(serverSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&enable, sizeof(enable));
+	::setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(enable));
+	// https://learn.microsoft.com/ko-kr/windows/win32/winsock/windows-sockets-error-codes-2
+	// https://learn.microsoft.com/ko-kr/windows/win32/winsock/so-exclusiveaddruse
+	// ::setsockopt(listenSocket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char*)&enable, sizeof(enable));
 
-	// SO_LINGER = 지연하다
-	// 송신 버퍼에 있는 데이터를 보낼 것인가? 날릴 것인가?
-	//struct  linger {
-	//	u_short l_onoff;                /* option on/off */		// onoff = 0이면 closesocket()이 바로 리턴. 아니면 linger초만큼 대기 (default 0)
-	//	u_short l_linger;               /* linger time */		// 대기 시간
-	//};
-	LINGER linger;
-	linger.l_onoff = 1;
-	linger.l_linger = 5;
-	::setsockopt(serverSocket, SOL_SOCKET, SO_LINGER, (char*)&linger, sizeof(linger));
+	SOCKADDR_IN serverAddr;
+	::memset(&serverAddr, 0, sizeof(serverAddr));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
+	serverAddr.sin_port = ::htons(7777);
 
-	// SO_SNDBUF = 송신 버퍼 크기
-	// SO_RCVBUF = 수신 버퍼 크기
-	int32 sendBufferSize;
-	int32 optionLen = sizeof(sendBufferSize);
-	::getsockopt(serverSocket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, &optionLen);
-	cout << "송신 버퍼 크기 : " << sendBufferSize << endl;
-
-	int32 recvBufferSize=0;
-	optionLen = sizeof(recvBufferSize);
-	::getsockopt(serverSocket, SOL_SOCKET, SO_RCVBUF, (char*)&recvBufferSize, &optionLen);
-	cout << "수신 버퍼 크기 : " << recvBufferSize << endl;
-
-
-	// SO_REUSEADDR
-	// IP주소 및 port 재사용 (테스트 시 사용 용도)
+	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 	{
-		bool enable = true;
-		::setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(enable));
+		HandleError("Bind Addr");
+		return -1;
 	}
 
-	// IPPROTO_TCP
-	// TCP_NODELAY = Nagle 네이글 알고리즘 작동 여부
-	// 데이터가 충분히 크면 보내고, 그렇지 않으면 데이터가 충분히 쌓일때까지 대기!
-	// 하지만, 게임에서는 일반적으로 끈다.
+	// https://learn.microsoft.com/ko-kr/windows/win32/api/winsock2/nf-winsock2-listen
+	// SOMAXCONN : 백로그에 적절한 최대값으로 설정
+	if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
 	{
-		bool enable = true;
-		::setsockopt(serverSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&enable, sizeof(enable));
+		HandleError("Listen Addr");
+		return -1;
 	}
 
-	//// Half-Close
-	//// SD_SEND : send 막는다
-	//// SD_RECEIVER : recv 막는다
-	//// SD_BOTH : 둘다 막는다
-	//::shutdown(serverSocket, SD_SEND);
+	cout << "Accept" << endl;
 
-	//// 소켓 리소스 반환 (이후에 전달을 받을 수 없다)
-	//// send -> closesocket
-	//::closesocket(serverSocket);
+	SOCKADDR_IN clientAddr;
+	int32 addrLen = sizeof(clientAddr);
 
-	
+	// Accept
+	while (true)
+	{
+		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+		if (clientSocket == INVALID_SOCKET)
+		{
+			// 블록했어야 하지만, Non-Blocking 이여서 pass
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
+
+			// Error
+			break;
+		}
+
+		cout << "Client Connected!" << endl;
+
+		// Recv
+		while (true) {
+			char recvBuffer[1000];
+			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+			if (recvLen == SOCKET_ERROR)
+			{
+				// 블록했어야 하지만, Non-Blocking 이여서 pass
+				if (::WSAGetLastError() == WSAEWOULDBLOCK)
+					continue;
+
+				// Error
+				break;
+			}
+			else if (recvLen == 0)
+			{
+				// 연결 끊김
+				break;
+			}
+
+			cout << "Recv Data Len = " << recvLen << endl;
+
+			// Send (echo 방식으로 동작)
+			while (true)
+			{
+				if (::send(clientSocket, recvBuffer, recvLen, 0) == SOCKET_ERROR)
+				{
+					// 블록했어야 하지만, Non-Blocking 이여서 pass
+					if (::WSAGetLastError() == WSAEWOULDBLOCK)
+						continue;
+
+					// Error
+					break;
+				}
+
+				cout << "Send Data ! Len = " << recvLen << endl;
+				break;
+			}
+		}
+	}
+
 
 	// 윈속 종료
 	::WSACleanup();
