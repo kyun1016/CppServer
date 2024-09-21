@@ -16,6 +16,8 @@ int main()
 {
 	SetConsoleOutputCP(CP_UTF8);
 
+	
+
 	WSADATA wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return -1;   // 시작이 안되는 경우 오류로 
