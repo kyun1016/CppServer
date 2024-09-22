@@ -20,19 +20,11 @@ int main()
 
 	SOCKET clientSocket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (clientSocket == INVALID_SOCKET)
-	{
-		HandleError("create Socket error");
 		return 0;
-	}
-		
 
 	u_long on = 1;
 	if (::ioctlsocket(clientSocket, FIONBIO, &on) == INVALID_SOCKET)
-	{
-		HandleError("Socket error");
 		return 0;
-	}
-		
 
 	SOCKADDR_IN serverAddr;
 	::memset(&serverAddr, 0, sizeof(serverAddr));
@@ -77,14 +69,13 @@ int main()
 			if (::WSAGetLastError() == WSA_IO_PENDING)
 			{
 				// Pending
-				::WSAWaitForMultipleEvents(1, &wsaEvent, TRUE, WSA_INFINITE, FALSE); // 잠시 대기
-				::WSAGetOverlappedResult(clientSocket, &overlapped, &sendLen, FALSE, &flags); // 받아준다
+				::WSAWaitForMultipleEvents(1, &wsaEvent, TRUE, WSA_INFINITE, FALSE);
+				::WSAGetOverlappedResult(clientSocket, &overlapped, &sendLen, FALSE, &flags);
 			}
 			else
 			{
 				// 진짜 문제 있는 상황
-				continue;
-				// break;
+				break;
 			}
 		}
 
