@@ -54,7 +54,7 @@ int main()
 	WSAEVENT wsaEvent = ::WSACreateEvent();
 	WSAOVERLAPPED overlapped = {};
 	overlapped.hEvent = wsaEvent;
-
+	this_thread::sleep_for(1s);
 	// Send
 	while (true)
 	{
