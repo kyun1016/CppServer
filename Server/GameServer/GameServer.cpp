@@ -20,5 +20,10 @@ int main()
 
 	cout << "Client Connected" << endl;
 
+	while (true)
+	{
+
+	}
+
 	GThreadManager->Join();
 }
