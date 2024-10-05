@@ -4,65 +4,68 @@ class Session;
 
 enum class EventType : uint8
 {
-    Connect,
-    Accept,
-    // PreRecv, 0 byte recv
-    Recv,
-    Send
+	Connect,
+	Accept,
+	//PreRecv,
+	Recv,
+	Send
 };
 
-/*-------------------
-* IocpEvent
--------------------*/
-// 주의점은 가상함수를 사용하는 것에 조심해야한다.
-// 가상함수를 사용하며 Offset 0번에 가상함수 테이블이 들어가면서
-// 소멸자 동작에 오류가 생길 수 있다.
+/*--------------
+	IocpEvent
+---------------*/
+
 class IocpEvent : public OVERLAPPED
 {
 public:
-    IocpEvent(EventType type);
+	IocpEvent(EventType type);
 
-    void Init();
-    EventType GetType() { return _type; }
-protected:
-    EventType _type;
-    IocpObjectRef owner;
+	void			Init();
+
+public:
+	EventType		eventType;
+	IocpObjectRef	owner;
 };
 
-/*-------------------
-* ConnectEvent
--------------------*/
+/*----------------
+	ConnectEvent
+-----------------*/
+
 class ConnectEvent : public IocpEvent
 {
 public:
-    ConnectEvent() : IocpEvent(EventType::Connect) {}
+	ConnectEvent() : IocpEvent(EventType::Connect) { }
 };
-/*-------------------
-* AcceptEvent
--------------------*/
+
+/*----------------
+	AcceptEvent
+-----------------*/
+
 class AcceptEvent : public IocpEvent
 {
 public:
-    AcceptEvent() : IocpEvent(EventType::Accept) {}
+	AcceptEvent() : IocpEvent(EventType::Accept) { }
 
-    void SetSession(Session* session) { _session = session; }
-    Session* GetSession() { return _session; }
-private:
-    Session* _session = nullptr;
+public:
+	SessionRef	session = nullptr;
 };
-/*-------------------
-* ReceiveEvent
--------------------*/
-class ReceiveEvent : public IocpEvent
+
+/*----------------
+	RecvEvent
+-----------------*/
+
+class RecvEvent : public IocpEvent
 {
 public:
-    ReceiveEvent() : IocpEvent(EventType::Recv) {}
+	RecvEvent() : IocpEvent(EventType::Recv) { }
 };
-/*-------------------
-* SendEvent
--------------------*/
+
+/*----------------
+	SendEvent
+-----------------*/
+
 class SendEvent : public IocpEvent
 {
 public:
-    SendEvent() : IocpEvent(EventType::Send) {}
+	SendEvent() : IocpEvent(EventType::Send) { }
 };

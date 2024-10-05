@@ -29,9 +29,10 @@ public:
 #endif
 	}
 
-	static shared_ptr<Type> MakeShared()
+	template<typename... Args>
+	static shared_ptr<Type> MakeShared(Args&&... args)
 	{
-		shared_ptr<Type> ptr = { Pop(), Push };
+		shared_ptr<Type> ptr = { Pop(forward<Args>(args)...), Push };
 		return ptr;
 	}
 
@@ -45,4 +46,3 @@ int32 ObjectPool<Type>::s_allocSize = sizeof(Type) + sizeof(MemoryHeader);
 
 template<typename Type>
 MemoryPool ObjectPool<Type>::s_pool{ s_allocSize };
-
