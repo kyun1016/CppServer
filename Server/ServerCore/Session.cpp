@@ -25,7 +25,7 @@ void Session::Disconnect(const WCHAR* cause)
 	// TEMP
 	wcout << "Disconnect : " << cause << endl;
 
-	OnDisconnected(); // ÄÁÅÙÃ÷¿¡¼­ ¿À¹ö·Îµù ÇÊ¿ä
+	OnDisconnected(); // ì»¨í…ì¸ ì—ì„œ ì˜¤ë²„ë¡œë”© í•„ìš”
 	SocketUtils::Close(_socket);
 	GetService()->ReleaseSession(GetSessionRef());
 }
@@ -90,13 +90,13 @@ void Session::ProcessConnect()
 {
 	_connected.store(true);
 
-	// ¼¼¼Ç µî·Ï
+	// ì„¸ì…˜ ë“±ë¡
 	GetService()->AddSession(GetSessionRef());
 
-	// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ¿À¹ö·Îµù
+	// ì»¨í…ì¸  ì½”ë“œì—ì„œ ì˜¤ë²„ë¡œë”©
 	OnConnected();
 
-	// ¼ö½Å µî·Ï
+	// ìˆ˜ì‹  ë“±ë¡
 	RegisterRecv();
 }
 
@@ -113,7 +113,7 @@ void Session::ProcessRecv(int32 numOfBytes)
 	// TODO
 	cout << "Recv Data Len = " << numOfBytes << endl;
 
-	// ¼ö½Å µî·Ï
+	// ìˆ˜ì‹  ë“±ë¡
 	RegisterRecv();
 }
 
