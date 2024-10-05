@@ -50,7 +50,6 @@ void DeadLockProfiler::PopLock(const char* name)
 	if (_lockStack.top() != lockId)
 		CRASH("INVALID_UNLOCK");
 
-
 	_lockStack.pop();
 }
 
@@ -67,7 +66,6 @@ void DeadLockProfiler::CheckCycle()
 
 	// 연산이 끝났으면 정리한다.
 	_discoveredOrder.clear();
-	_discoveredCount = 0;
 	_finished.clear();
 	_parent.clear();
 }

@@ -6,7 +6,7 @@
 -----------------*/
 
 LPFN_CONNECTEX		SocketUtils::ConnectEx = nullptr;
-LPFN_DISCONNECTEX	SocketUtils::DisconnectEx = nullptr;
+LPFN_DISCONNECTEX	SocketUtils::DisconnectEx = nullptr;	// https://learn.microsoft.com/ko-kr/windows/win32/api/mswsock/nc-mswsock-lpfn_disconnectex
 LPFN_ACCEPTEX		SocketUtils::AcceptEx = nullptr;
 
 void SocketUtils::Init()

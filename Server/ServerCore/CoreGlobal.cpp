@@ -7,23 +7,24 @@
 
 ThreadManager* GThreadManager = nullptr;
 DeadLockProfiler* GDeadLockProfiler = nullptr;
-Memory* GMemory;
+Memory* GMemory = nullptr;
 
-
-CoreGlobal::CoreGlobal()
+class CoreGlobal
 {
-	GThreadManager = new ThreadManager();
-	GDeadLockProfiler = new DeadLockProfiler();
-	GMemory = new Memory();
-	SocketUtils::Init();
-}
+public:
+	CoreGlobal()
+	{
+		GThreadManager = new ThreadManager();
+		GDeadLockProfiler = new DeadLockProfiler();
+		GMemory = new Memory();
+		SocketUtils::Init();
+	}
 
-CoreGlobal::~CoreGlobal()
-{
-	delete GThreadManager;
-	delete GDeadLockProfiler;
-	delete GMemory;
-	SocketUtils::Clear();
-}
-
-CoreGlobal GCoreGlobal;
+	~CoreGlobal()
+	{
+		delete GThreadManager;
+		delete GDeadLockProfiler;
+		delete GMemory;
+		SocketUtils::Clear();
+	}
+} GCoreGlobal;

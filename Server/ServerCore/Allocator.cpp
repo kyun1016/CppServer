@@ -29,7 +29,7 @@ void* StompAllocator::Alloc(int32 size)
 void StompAllocator::Release(void* ptr)
 {
 	const int64 address = reinterpret_cast<int64>(ptr);
-	const int64 baseAddress = address - (address & PAGE_SIZE);
+	const int64 baseAddress = address - (address % PAGE_SIZE);
 	::VirtualFree(reinterpret_cast<void*>(baseAddress), 0, MEM_RELEASE);
 }
 
