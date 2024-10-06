@@ -10,6 +10,12 @@ public:
 	{
 		cout << "~GameSession" << endl;
 	}
+
+	virtual void OnConnected() override
+	{
+		cout << "Connected To Client" << endl;
+	}
+
 	virtual int32 OnRecv(BYTE* buffer, int32 len) override
 	{
 		// Echo
@@ -21,6 +27,11 @@ public:
 	virtual void OnSend(int32 len) override
 	{
 		cout << "OnSend Len = " << len << endl;
+	}
+
+	virtual void OnDisconnected() override
+	{
+		cout << "Disconnected" << endl;
 	}
 };
 
@@ -34,6 +45,7 @@ int main()
 		100);
 
 	ASSERT_CRASH(service->Start());
+	cout << "service start" << endl;
 
 	for (int32 i = 0; i < 5; i++)
 	{
