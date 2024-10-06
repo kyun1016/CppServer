@@ -2,39 +2,7 @@
 #include "ThreadManager.h"
 #include "Service.h"
 #include "Session.h"
-
-class GameSession : public Session
-{
-public:
-	~GameSession()
-	{
-		cout << "~GameSession" << endl;
-	}
-
-	virtual void OnConnected() override
-	{
-		cout << "Connected To Client" << endl;
-	}
-
-	virtual int32 OnRecv(BYTE* buffer, int32 len) override
-	{
-		// Echo
-		cout << "OnRecv Len = " << len << endl;
-		Send(buffer, len);
-		return len;
-	}
-
-	virtual void OnSend(int32 len) override
-	{
-		cout << "OnSend Len = " << len << endl;
-	}
-
-	virtual void OnDisconnected() override
-	{
-		cout << "Disconnected" << endl;
-	}
-};
-
+#include "GameSession.h"
 
 int main()
 {
@@ -45,7 +13,6 @@ int main()
 		100);
 
 	ASSERT_CRASH(service->Start());
-	cout << "service start" << endl;
 
 	for (int32 i = 0; i < 5; i++)
 	{
@@ -59,4 +26,6 @@ int main()
 	}
 
 	GThreadManager->Join();
+
+	return 0;
 }
