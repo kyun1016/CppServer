@@ -17,6 +17,7 @@ struct Data_S_TEST
 	uint32 hp;
 	uint16 attack;
 	vector<BuffData> buffs;
+	wstring name;
 };
 
 class ClientPacketHandler

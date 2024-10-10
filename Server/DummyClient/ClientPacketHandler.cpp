@@ -39,4 +39,11 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 		br >> recv.buffs[i].buffId >> recv.buffs[i].remainTime;
 		cout << "BufInfo : " << recv.buffs[i].buffId << " " << recv.buffs[i].remainTime << endl;
 	}
+
+	uint16 nameLen;
+	br >> nameLen;
+	recv.name.resize(nameLen);
+	br.Read((void*)recv.name.data(), nameLen * sizeof(WCHAR));
+	wcout.imbue(std::locale("kor"));
+	wcout << recv.name << endl;
 }
