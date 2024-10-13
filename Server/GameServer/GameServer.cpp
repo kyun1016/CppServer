@@ -6,23 +6,10 @@
 #include "GameSessionManager.h"
 #include "BufferWriter.h"
 #include "ServerPacketHandler.h"
-
-#define _UNICODE
-
-struct PKT_S_TEST
-{
-	uint64 id; // 8
-	uint32 hp; // 4
-	uint16 attack; // 2
-};
+#include <tchar.h>
 
 int main()
 {
-	PKT_S_TEST pkt;
-	pkt.id = 1;
-	pkt.hp = 2;
-	pkt.attack = 3;
-
 	ServerServiceRef service = MakeShared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),
@@ -38,21 +25,43 @@ int main()
 				while (true)
 				{
 					service->GetIocpCore()->Dispatch();
-				}
+				}				
 			});
-	}
+	}	
 
-	// char sendData[1000] = "가"; // CP949 = KS-X1001(한글2바이트) + 
-	// char sendData1[1000] = u8"가"; // UTF8 = Unicode (한글3바이트 + 로마1바이트)
-	WCHAR sendData2[1000] = L"가"; // UTF16 = Unicode (한글/로마 2바이트)
-	// TCHAR sendData3[1000] = _T("가"); // 특수하게 활용할 수 있다.
-
-	WCHAR sendData[1000] = L"Hello World";
+	WCHAR sendData3[1000] = L"가"; // UTF16 = Unicode (한글/로마 2바이트)
 
 	while (true)
 	{
-		vector<BuffData> buffs{ BuffData {100, 1.5f}, BuffData{200, 2.3f}, BuffData {300, 0.7f } };
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_TEST(1001, 100, 10, buffs, L"안녕하세요");
+		// [ PKT_S_TEST ]
+		PKT_S_TEST_WRITE pktWriter(1001, 100, 10);
+
+		// [ PKT_S_TEST ][BuffsListItem BuffsListItem BuffsListItem]
+		PKT_S_TEST_WRITE::BuffsList buffList = pktWriter.ReserveBuffsList(3);
+		buffList[0] = { 100, 1.5f };
+		buffList[1] = { 200, 2.3f };
+		buffList[2] = { 300, 0.7f };
+
+		PKT_S_TEST_WRITE::BuffsVictimsList vic0 = pktWriter.ReserveBuffsVictimsList(&buffList[0], 3);
+		{
+			vic0[0] = 1000;
+			vic0[1] = 2000;
+			vic0[2] = 3000;
+		}
+
+		PKT_S_TEST_WRITE::BuffsVictimsList vic1 = pktWriter.ReserveBuffsVictimsList(&buffList[1], 1);
+		{
+			vic1[0] = 1000;
+		}
+
+		PKT_S_TEST_WRITE::BuffsVictimsList vic2 = pktWriter.ReserveBuffsVictimsList(&buffList[2], 2);
+		{
+			vic2[0] = 3000;
+			vic2[1] = 5000;
+		}
+
+		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
 		GSessionManager.Broadcast(sendBuffer);
 
 		this_thread::sleep_for(250ms);
