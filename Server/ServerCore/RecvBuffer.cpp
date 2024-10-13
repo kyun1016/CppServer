@@ -13,6 +13,7 @@ RecvBuffer::RecvBuffer(int32 bufferSize) : _bufferSize(bufferSize)
 
 RecvBuffer::~RecvBuffer()
 {
+	cout << "Deleted Recv Buffer" << endl;
 }
 
 void RecvBuffer::Clean()
