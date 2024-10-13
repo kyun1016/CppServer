@@ -17,33 +17,67 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	}
 }
 
+#pragma pack(1)
+
+// [ PKT_S_TEST ][BuffsListItem BuffsListItem BuffsListItem]
+struct PKT_S_TEST
+{
+	struct BuffsListItem
+	{
+		uint64 buffId;
+		float remainTime;
+	};
+
+	uint16 packetSize; // 공용 헤더
+	uint16 packetId; // 공용 헤더
+	uint64 id; // 8
+	uint32 hp; // 4
+	uint16 attack; // 2
+	uint16 buffsOffset;
+	uint16 buffsCount;
+
+	bool Validate()
+	{
+		uint32 size = 0;
+		size += sizeof(PKT_S_TEST);
+		size += buffsCount * sizeof(BuffsListItem);
+		if (size != packetSize)
+			return false;
+
+		if (buffsOffset + buffsCount * sizeof(BuffsListItem) > packetSize)
+			return false;
+
+		return true;
+	}
+	//vector<BuffData> buffs;
+	//wstring name;
+};
+#pragma pack()
+
 void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
-	PacketHeader header;
-	br >> header;
+	if (len < sizeof(PKT_S_TEST))
+		return;
 
-	Data_S_TEST recv;
-	br >> recv.id >> recv.hp >> recv.attack;
+	PKT_S_TEST pkt;
+	br >> pkt;
 
-	cout << "ID: " << recv.id << " HP : " << recv.hp << " ATT : " << recv.attack << endl;
+	if (pkt.Validate() == false)
+		return;
 
-	uint16 buffCount;
-	br >> buffCount;
-	cout << "BufCount : " << buffCount << endl;
+	//cout << "ID: " << id << " HP : " << hp << " ATT : " << attack << endl;
 
-	recv.buffs.resize(buffCount);
-	for (int32 i = 0; i < buffCount; i++)
+	vector<PKT_S_TEST::BuffsListItem> buffs;
+
+	buffs.resize(pkt.buffsCount);
+	for (int32 i = 0; i < pkt.buffsCount; i++)
+		br >> buffs[i];
+
+	cout << "BufCount : " << pkt.buffsCount << endl;
+	for (int32 i = 0; i < pkt.buffsCount; i++)
 	{
-		br >> recv.buffs[i].buffId >> recv.buffs[i].remainTime;
-		cout << "BufInfo : " << recv.buffs[i].buffId << " " << recv.buffs[i].remainTime << endl;
+		cout << "BufInfo : " << buffs[i].buffId << " " << buffs[i].remainTime << endl;
 	}
-
-	uint16 nameLen;
-	br >> nameLen;
-	recv.name.resize(nameLen);
-	br.Read((void*)recv.name.data(), nameLen * sizeof(WCHAR));
-	wcout.imbue(std::locale("kor"));
-	wcout << recv.name << endl;
 }

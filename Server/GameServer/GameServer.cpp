@@ -9,8 +9,20 @@
 
 #define _UNICODE
 
+struct PKT_S_TEST
+{
+	uint64 id; // 8
+	uint32 hp; // 4
+	uint16 attack; // 2
+};
+
 int main()
 {
+	PKT_S_TEST pkt;
+	pkt.id = 1;
+	pkt.hp = 2;
+	pkt.attack = 3;
+
 	ServerServiceRef service = MakeShared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),

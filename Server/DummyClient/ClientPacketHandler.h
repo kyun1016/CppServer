@@ -5,21 +5,6 @@ enum
 	S_TEST = 1
 };
 
-// 패킷 설계 TEMP
-struct BuffData
-{
-	uint64 buffId;
-	float remainTime;
-};
-struct Data_S_TEST
-{
-	uint64 id;
-	uint32 hp;
-	uint16 attack;
-	vector<BuffData> buffs;
-	wstring name;
-};
-
 class ClientPacketHandler
 {
 public:
