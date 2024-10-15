@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+
+  "dependencies": [
+    "abseil",
+    {
+      "name": "protobuf",
+      "host": true
+    },
+    "utf8-range",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    "protobuf",
+    "utfcpp"
+  ],
+  "features": {
+    "zlib": {
+      "description": "ZLib based features like Gzip streams",
+      "dependencies": [
+        "zlib"
+      ]
+    }
+  }
+}
