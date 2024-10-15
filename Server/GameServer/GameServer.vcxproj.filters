@@ -50,5 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
+    <None Include="..\protoc-4.25.1\Protocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
   </ItemGroup>
 </Project>
