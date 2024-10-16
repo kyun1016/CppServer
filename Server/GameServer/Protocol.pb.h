@@ -26,6 +26,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/arena.h"
 #include "google/protobuf/arenastring.h"
+#include "google/protobuf/generated_message_bases.h"
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
@@ -34,6 +35,8 @@
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
 #include "google/protobuf/unknown_field_set.h"
+#include "Enum.pb.h"
+#include "Struct.pb.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -56,9 +59,9 @@ struct TableStruct_Protocol_2eproto {
 extern const ::google::protobuf::internal::DescriptorTable
     descriptor_table_Protocol_2eproto;
 namespace Protocol {
-class BuffData;
-struct BuffDataDefaultTypeInternal;
-extern BuffDataDefaultTypeInternal _BuffData_default_instance_;
+class S_LOGIN;
+struct S_LOGINDefaultTypeInternal;
+extern S_LOGINDefaultTypeInternal _S_LOGIN_default_instance_;
 class S_TEST;
 struct S_TESTDefaultTypeInternal;
 extern S_TESTDefaultTypeInternal _S_TEST_default_instance_;
@@ -75,26 +78,25 @@ namespace Protocol {
 
 // -------------------------------------------------------------------
 
-class BuffData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Protocol.BuffData) */ {
+class S_LOGIN final :
+    public ::google::protobuf::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.S_LOGIN) */ {
  public:
-  inline BuffData() : BuffData(nullptr) {}
-  ~BuffData() override;
+  inline S_LOGIN() : S_LOGIN(nullptr) {}
   template<typename = void>
-  explicit PROTOBUF_CONSTEXPR BuffData(::google::protobuf::internal::ConstantInitialized);
+  explicit PROTOBUF_CONSTEXPR S_LOGIN(::google::protobuf::internal::ConstantInitialized);
 
-  inline BuffData(const BuffData& from)
-      : BuffData(nullptr, from) {}
-  BuffData(BuffData&& from) noexcept
-    : BuffData() {
+  inline S_LOGIN(const S_LOGIN& from)
+      : S_LOGIN(nullptr, from) {}
+  S_LOGIN(S_LOGIN&& from) noexcept
+    : S_LOGIN() {
     *this = ::std::move(from);
   }
 
-  inline BuffData& operator=(const BuffData& from) {
+  inline S_LOGIN& operator=(const S_LOGIN& from) {
     CopyFrom(from);
     return *this;
   }
-  inline BuffData& operator=(BuffData&& from) noexcept {
+  inline S_LOGIN& operator=(S_LOGIN&& from) noexcept {
     if (this == &from) return *this;
     if (GetArena() == from.GetArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -126,20 +128,20 @@ class BuffData final :
   static const ::google::protobuf::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const BuffData& default_instance() {
+  static const S_LOGIN& default_instance() {
     return *internal_default_instance();
   }
-  static inline const BuffData* internal_default_instance() {
-    return reinterpret_cast<const BuffData*>(
-               &_BuffData_default_instance_);
+  static inline const S_LOGIN* internal_default_instance() {
+    return reinterpret_cast<const S_LOGIN*>(
+               &_S_LOGIN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
-  friend void swap(BuffData& a, BuffData& b) {
+  friend void swap(S_LOGIN& a, S_LOGIN& b) {
     a.Swap(&b);
   }
-  inline void Swap(BuffData* other) {
+  inline void Swap(S_LOGIN* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetArena() != nullptr &&
@@ -152,7 +154,7 @@ class BuffData final :
       ::google::protobuf::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(BuffData* other) {
+  void UnsafeArenaSwap(S_LOGIN* other) {
     if (other == this) return;
     ABSL_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -160,45 +162,28 @@ class BuffData final :
 
   // implements Message ----------------------------------------------
 
-  BuffData* New(::google::protobuf::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<BuffData>(arena);
+  S_LOGIN* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_LOGIN>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
-  void CopyFrom(const BuffData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const BuffData& from) {
-    BuffData::MergeImpl(*this, from);
+  using ::google::protobuf::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const S_LOGIN& from) {
+    ::google::protobuf::internal::ZeroFieldsBase::CopyImpl(*this, from);
   }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
+  using ::google::protobuf::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const S_LOGIN& from) {
+    ::google::protobuf::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
   public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  ::size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
-  ::uint8_t* _InternalSerialize(
-      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
-
-  private:
-  ::google::protobuf::internal::CachedSize* AccessCachedSize() const final;
-  void SharedCtor(::google::protobuf::Arena* arena);
-  void SharedDtor();
-  void InternalSwap(BuffData* other);
 
   private:
   friend class ::google::protobuf::internal::AnyMetadata;
   static ::absl::string_view FullMessageName() {
-    return "Protocol.BuffData";
+    return "Protocol.S_LOGIN";
   }
   protected:
-  explicit BuffData(::google::protobuf::Arena* arena);
-  BuffData(::google::protobuf::Arena* arena, const BuffData& from);
+  explicit S_LOGIN(::google::protobuf::Arena* arena);
+  S_LOGIN(::google::protobuf::Arena* arena, const S_LOGIN& from);
   public:
-
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
 
   ::google::protobuf::Metadata GetMetadata() const final;
 
@@ -206,60 +191,10 @@ class BuffData final :
 
   // accessors -------------------------------------------------------
 
-  enum : int {
-    kVictimsFieldNumber = 3,
-    kBuffIdFieldNumber = 1,
-    kRemainTimeFieldNumber = 2,
-  };
-  // repeated uint64 victims = 3;
-  int victims_size() const;
-  private:
-  int _internal_victims_size() const;
-
-  public:
-  void clear_victims() ;
-  ::uint64_t victims(int index) const;
-  void set_victims(int index, ::uint64_t value);
-  void add_victims(::uint64_t value);
-  const ::google::protobuf::RepeatedField<::uint64_t>& victims() const;
-  ::google::protobuf::RepeatedField<::uint64_t>* mutable_victims();
-
-  private:
-  const ::google::protobuf::RepeatedField<::uint64_t>& _internal_victims() const;
-  ::google::protobuf::RepeatedField<::uint64_t>* _internal_mutable_victims();
-
-  public:
-  // uint64 buffId = 1;
-  bool has_buffid() const;
-  void clear_buffid() ;
-  ::uint64_t buffid() const;
-  void set_buffid(::uint64_t value);
-
-  private:
-  ::uint64_t _internal_buffid() const;
-  void _internal_set_buffid(::uint64_t value);
-
-  public:
-  // float remainTime = 2;
-  bool has_remaintime() const;
-  void clear_remaintime() ;
-  float remaintime() const;
-  void set_remaintime(float value);
-
-  private:
-  float _internal_remaintime() const;
-  void _internal_set_remaintime(float value);
-
-  public:
-  // @@protoc_insertion_point(class_scope:Protocol.BuffData)
+  // @@protoc_insertion_point(class_scope:Protocol.S_LOGIN)
  private:
   class _Internal;
 
-  friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<
-      2, 3, 0,
-      0, 2>
-      _table_;
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
   template <typename T>
@@ -274,15 +209,8 @@ class BuffData final :
                               ::google::protobuf::Arena* arena);
         inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                               ::google::protobuf::Arena* arena, const Impl_& from);
-    ::google::protobuf::internal::HasBits<1> _has_bits_;
-    mutable ::google::protobuf::internal::CachedSize _cached_size_;
-    ::google::protobuf::RepeatedField<::uint64_t> victims_;
-    mutable ::google::protobuf::internal::CachedSize _victims_cached_byte_size_;
-    ::uint64_t buffid_;
-    float remaintime_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
-  union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };// -------------------------------------------------------------------
 
@@ -345,7 +273,7 @@ class S_TEST final :
                &_S_TEST_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    0;
 
   friend void swap(S_TEST& a, S_TEST& b) {
     a.Swap(&b);
@@ -442,7 +370,6 @@ class S_TEST final :
   const ::google::protobuf::RepeatedPtrField< ::Protocol::BuffData >&
       buffs() const;
   // uint64 id = 1;
-  bool has_id() const;
   void clear_id() ;
   ::uint64_t id() const;
   void set_id(::uint64_t value);
@@ -453,7 +380,6 @@ class S_TEST final :
 
   public:
   // uint32 hp = 2;
-  bool has_hp() const;
   void clear_hp() ;
   ::uint32_t hp() const;
   void set_hp(::uint32_t value);
@@ -464,7 +390,6 @@ class S_TEST final :
 
   public:
   // uint32 attack = 3;
-  bool has_attack() const;
   void clear_attack() ;
   ::uint32_t attack() const;
   void set_attack(::uint32_t value);
@@ -497,12 +422,11 @@ class S_TEST final :
                               ::google::protobuf::Arena* arena);
         inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                               ::google::protobuf::Arena* arena, const Impl_& from);
-    ::google::protobuf::internal::HasBits<1> _has_bits_;
-    mutable ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::RepeatedPtrField< ::Protocol::BuffData > buffs_;
     ::uint64_t id_;
     ::uint32_t hp_;
     ::uint32_t attack_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -523,122 +447,12 @@ class S_TEST final :
 #endif  // __GNUC__
 // -------------------------------------------------------------------
 
-// BuffData
-
-// uint64 buffId = 1;
-inline bool BuffData::has_buffid() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline void BuffData::clear_buffid() {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_.buffid_ = ::uint64_t{0u};
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline ::uint64_t BuffData::buffid() const {
-  // @@protoc_insertion_point(field_get:Protocol.BuffData.buffId)
-  return _internal_buffid();
-}
-inline void BuffData::set_buffid(::uint64_t value) {
-  _internal_set_buffid(value);
-  // @@protoc_insertion_point(field_set:Protocol.BuffData.buffId)
-}
-inline ::uint64_t BuffData::_internal_buffid() const {
-  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
-  return _impl_.buffid_;
-}
-inline void BuffData::_internal_set_buffid(::uint64_t value) {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.buffid_ = value;
-}
-
-// float remainTime = 2;
-inline bool BuffData::has_remaintime() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline void BuffData::clear_remaintime() {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_.remaintime_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline float BuffData::remaintime() const {
-  // @@protoc_insertion_point(field_get:Protocol.BuffData.remainTime)
-  return _internal_remaintime();
-}
-inline void BuffData::set_remaintime(float value) {
-  _internal_set_remaintime(value);
-  // @@protoc_insertion_point(field_set:Protocol.BuffData.remainTime)
-}
-inline float BuffData::_internal_remaintime() const {
-  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
-  return _impl_.remaintime_;
-}
-inline void BuffData::_internal_set_remaintime(float value) {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.remaintime_ = value;
-}
-
-// repeated uint64 victims = 3;
-inline int BuffData::_internal_victims_size() const {
-  return _internal_victims().size();
-}
-inline int BuffData::victims_size() const {
-  return _internal_victims_size();
-}
-inline void BuffData::clear_victims() {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_.victims_.Clear();
-}
-inline ::uint64_t BuffData::victims(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.BuffData.victims)
-  return _internal_victims().Get(index);
-}
-inline void BuffData::set_victims(int index, ::uint64_t value) {
-  _internal_mutable_victims()->Set(index, value);
-  // @@protoc_insertion_point(field_set:Protocol.BuffData.victims)
-}
-inline void BuffData::add_victims(::uint64_t value) {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _internal_mutable_victims()->Add(value);
-  // @@protoc_insertion_point(field_add:Protocol.BuffData.victims)
-}
-inline const ::google::protobuf::RepeatedField<::uint64_t>& BuffData::victims() const
-    ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_list:Protocol.BuffData.victims)
-  return _internal_victims();
-}
-inline ::google::protobuf::RepeatedField<::uint64_t>* BuffData::mutable_victims()
-    ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.BuffData.victims)
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  return _internal_mutable_victims();
-}
-inline const ::google::protobuf::RepeatedField<::uint64_t>& BuffData::_internal_victims()
-    const {
-  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
-  return _impl_.victims_;
-}
-inline ::google::protobuf::RepeatedField<::uint64_t>* BuffData::_internal_mutable_victims() {
-  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
-  return &_impl_.victims_;
-}
-
-// -------------------------------------------------------------------
-
 // S_TEST
 
 // uint64 id = 1;
-inline bool S_TEST::has_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
 inline void S_TEST::clear_id() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   _impl_.id_ = ::uint64_t{0u};
-  _impl_._has_bits_[0] &= ~0x00000001u;
 }
 inline ::uint64_t S_TEST::id() const {
   // @@protoc_insertion_point(field_get:Protocol.S_TEST.id)
@@ -654,19 +468,14 @@ inline ::uint64_t S_TEST::_internal_id() const {
 }
 inline void S_TEST::_internal_set_id(::uint64_t value) {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_._has_bits_[0] |= 0x00000001u;
+  ;
   _impl_.id_ = value;
 }
 
 // uint32 hp = 2;
-inline bool S_TEST::has_hp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
 inline void S_TEST::clear_hp() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   _impl_.hp_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline ::uint32_t S_TEST::hp() const {
   // @@protoc_insertion_point(field_get:Protocol.S_TEST.hp)
@@ -682,19 +491,14 @@ inline ::uint32_t S_TEST::_internal_hp() const {
 }
 inline void S_TEST::_internal_set_hp(::uint32_t value) {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_._has_bits_[0] |= 0x00000002u;
+  ;
   _impl_.hp_ = value;
 }
 
 // uint32 attack = 3;
-inline bool S_TEST::has_attack() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
 inline void S_TEST::clear_attack() {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   _impl_.attack_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline ::uint32_t S_TEST::attack() const {
   // @@protoc_insertion_point(field_get:Protocol.S_TEST.attack)
@@ -710,7 +514,7 @@ inline ::uint32_t S_TEST::_internal_attack() const {
 }
 inline void S_TEST::_internal_set_attack(::uint32_t value) {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_._has_bits_[0] |= 0x00000004u;
+  ;
   _impl_.attack_ = value;
 }
 
@@ -720,10 +524,6 @@ inline int S_TEST::_internal_buffs_size() const {
 }
 inline int S_TEST::buffs_size() const {
   return _internal_buffs_size();
-}
-inline void S_TEST::clear_buffs() {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  _impl_.buffs_.Clear();
 }
 inline ::Protocol::BuffData* S_TEST::mutable_buffs(int index)
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
@@ -762,6 +562,10 @@ S_TEST::_internal_mutable_buffs() {
   PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
   return &_impl_.buffs_;
 }
+
+// -------------------------------------------------------------------
+
+// S_LOGIN
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
