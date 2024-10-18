@@ -20,8 +20,8 @@ using UniqueLock = std::unique_lock<std::mutex>;
 using LockGuard = std::lock_guard<std::mutex>;
 
 // shared_ptr
-using IocpObjectRef			= std::shared_ptr<class IocpObject>;
 using IocpCoreRef			= std::shared_ptr<class IocpCore>;
+using IocpObjectRef			= std::shared_ptr<class IocpObject>;
 using SessionRef			= std::shared_ptr<class Session>;
 using PacketSessionRef		= std::shared_ptr<class PacketSession>;
 using ListenerRef			= std::shared_ptr<class Listener>;
@@ -29,10 +29,11 @@ using ServerServiceRef		= std::shared_ptr<class ServerService>;
 using ClientServiceRef		= std::shared_ptr<class ClientService>;
 using SendBufferRef			= std::shared_ptr<class SendBuffer>;
 using SendBufferChunkRef	= std::shared_ptr<class SendBufferChunk>;
+using JobRef				= std::shared_ptr<class Job>;
 
-#define size16(val)			static_cast<int16>(sizeof(val))
-#define size32(val)			static_cast<int32>(sizeof(val))
-#define len16(arr)			static_cast<int16>(sizeof(arr)/sizeof(arr[0]))
-#define len32(arr)			static_cast<int32>(sizeof(arr)/sizeof(arr[0]))
+#define size16(val)		static_cast<int16>(sizeof(val))
+#define size32(val)		static_cast<int32>(sizeof(val))
+#define len16(arr)		static_cast<int16>(sizeof(arr)/sizeof(arr[0]))
+#define len32(arr)		static_cast<int32>(sizeof(arr)/sizeof(arr[0]))
 
 #define _STOMP

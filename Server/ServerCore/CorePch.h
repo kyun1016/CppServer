@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Types.h"
 #include "CoreMacro.h"
 #include "CoreTLS.h"
@@ -20,3 +21,4 @@ using namespace std;
 #include "Memory.h"
 #include "SendBuffer.h"
 #include "Session.h"
+#include "JobQueue.h"

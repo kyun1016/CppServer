@@ -39,14 +39,11 @@
     <ClCompile Include="Enum.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>GameContents</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
-    <ClCompile Include="Job.cpp">
-      <Filter>Main</Filter>
+    <ClCompile Include="Room.cpp">
+      <Filter>GameContents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,9 +73,6 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>GameContents</Filter>
-    </ClInclude>
-    <ClInclude Include="Job.h">
-      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
