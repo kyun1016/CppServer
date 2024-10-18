@@ -3,8 +3,7 @@
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
-// 직접 컨텐츠 작업자
-
+// Á÷Á¢ ÄÁÅÙÃ÷ ÀÛ¾÷ÀÚ
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
