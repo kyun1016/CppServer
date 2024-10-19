@@ -226,6 +226,7 @@
     <None Include="..\Common\Protobuf\bin\GenPackets.bat" />
     <None Include="..\Common\Protobuf\bin\Protocol.proto" />
     <None Include="..\Common\Protobuf\bin\Struct.proto" />
+    <None Include="DB_01.sql" />
     <None Include="vcpkg.json" />
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +234,9 @@
     <UpToDateCheckInput Include="..\Common\Protobuf\bin\Protocol.proto" />
     <UpToDateCheckInput Include="..\Common\Protobuf\bin\Struct.proto" />
     <UpToDateCheckInput Include="vcpkg.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="GameDB.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

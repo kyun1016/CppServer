@@ -22,6 +22,9 @@
     <Filter Include="DB">
       <UniqueIdentifier>{1e85b1d6-177c-4111-824f-7847668846cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{d293d9db-9f2f-46d4-b0da-efeb9a11a69a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CorePch.h">
@@ -126,6 +129,27 @@
     <ClInclude Include="DBConnectionPool.h">
       <Filter>DB</Filter>
     </ClInclude>
+    <ClInclude Include="DBBind.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml_iterators.hpp">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml_print.hpp">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml_utils.hpp">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml.hpp">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlParser.h">
+      <Filter>XML</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePch.cpp">
@@ -214,6 +238,15 @@
     </ClCompile>
     <ClCompile Include="DBConnectionPool.cpp">
       <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="DBBind.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlParser.cpp">
+      <Filter>XML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
