@@ -26,8 +26,8 @@ void ThreadManager::Launch(function<void(void)> callback)
 	_threads.push_back(thread([=]()
 		{
 			InitTLS();
-			callback();
-			DestroyTLS();
+	callback();
+	DestroyTLS();
 		}));
 }
 
@@ -66,4 +66,11 @@ void ThreadManager::DoGlobalQueueWork()
 
 		jobQueue->Execute();
 	}
+}
+
+void ThreadManager::DistributeReservedJobs()
+{
+	const uint64 now = ::GetTickCount64();
+
+	GJobTimer->Distribute(now);
 }
